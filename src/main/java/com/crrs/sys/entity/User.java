@@ -4,6 +4,8 @@ public class User {
     private Integer id;
     private String userName;
     private String passWord;
+    private String salt;
+    private String locked;
 
     public Integer getId() {
         return id;
@@ -27,5 +29,21 @@ public class User {
 
     public void setPassWord(String passWord) {
         this.passWord = passWord;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public String getLocked() {
+        return locked;
+    }
+
+    public void setLocked(String locked) {
+        this.locked = locked;
     }
 }

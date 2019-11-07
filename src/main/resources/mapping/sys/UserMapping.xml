@@ -8,7 +8,7 @@
         <result column="passWord" property="passWord" />
     </resultMap>
 
-    <select id="Sel" resultType="java.lang.Integer" resultMap="BaseResultMap">
-        select * from sys_tb_user where id = #{id}
+    <select id="queryUserName" resultType="java.lang.String" resultMap="BaseResultMap">
+        select * from sys_users where username = #{uname}
     </select>
 </mapper>

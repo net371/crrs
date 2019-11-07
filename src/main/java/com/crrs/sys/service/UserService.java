@@ -12,8 +12,8 @@ public class UserService {
     @Autowired
     UserMapper userMapper;
 
-    public User Sel(int id) {
-        List<User> list = userMapper.Sel(id);
+    public User queryUserName(String uname) {
+        List<User> list = userMapper.queryUserName(uname);
         if(list!=null&&list.size()>0){
             return list.get(0);
         }
