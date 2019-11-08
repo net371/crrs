@@ -5,6 +5,7 @@ import com.crrs.sys.mapper.UserMapper;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
+import org.apache.shiro.crypto.hash.Sha512Hash;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
@@ -29,12 +30,10 @@ public class AuthRealm extends AuthorizingRealm {
         if(ulist!=null&&ulist.size()>0){
             user = ulist.get(0);
         }
-        // 认证的实体信息，可以是username，也可以是用户的实体类对象，这里用的用户名
-        Object principal = username;
-        // 颜值加密的颜，可以用用户名
-        ByteSource credentialsSalt = ByteSource.Util.bytes(username);
+        String credentials = new Sha512Hash(utoken.getPassword(), user.getSalt()).toString();
+        utoken.setPassword(credentials.toCharArray());
         //放入shiro.调用CredentialsMatcher检验密码
-        return new SimpleAuthenticationInfo(user, user.getPassWord(),credentialsSalt,this.getClass().getName());
+        return new SimpleAuthenticationInfo(user, user.getPassWord(),this.getClass().getName());
     }
 
     //授权

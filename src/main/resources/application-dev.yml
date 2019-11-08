@@ -13,7 +13,8 @@ spring:
       suffix: .jsp
 
 mybatis:
-  mapper-locations: classpath*:mapping/*/*Mapping.xml
+  config-location: classpath:mapping/mybatis-config.xml
+  mapper-locations: classpath:mapping/*/*Mapping.xml
   type-aliases-package: com.crrs.*.entity
 
 #showSql
