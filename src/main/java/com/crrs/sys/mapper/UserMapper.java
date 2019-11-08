@@ -8,4 +8,10 @@ import java.util.List;
 @Repository
 public interface UserMapper {
     List<User> queryUserName(String uname);
+
+    /**
+     * 新增
+     * @param user
+     */
+    void insertModel(User user);
 }

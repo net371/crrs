@@ -59,6 +59,21 @@ public class UserController {
         }
     }
 
+    @RequestMapping("insert")
+    protected void insertModel(HttpServletRequest request,
+                            HttpServletResponse response){
+        JSONObject json = new JSONObject();
+        try {
+            String uname = request.getParameter("uname");
+            String pwd = request.getParameter("pwd");
+            User user = new User(uname, pwd);
+            userService.insertModel(user);
+            WebUtil.packResponse(json, BaseCode.SITE_OK.getCode(), response);
+        }catch (Exception ex){
+            WebUtil.packResponse(json, BaseCode.SITE_NG.getCode(), response);
+        }
+    }
+
     /**
      * 退出
      * @param session

@@ -19,4 +19,12 @@ public class UserService {
         }
         return null;
     }
+
+    /**
+     * 新增
+     * @param user
+     */
+    public void insertModel(User user) {
+        userMapper.insertModel(user);
+    }
 }
