@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class UserService {
@@ -26,5 +27,18 @@ public class UserService {
      */
     public void insertModel(User user) {
         userMapper.insertModel(user);
+    }
+
+    /***
+     *查询用户列表
+     * @param map
+     * @return
+     */
+    public List<User> findlist(Map<String, Object> map) {
+       return userMapper.findlist(map);
+    }
+
+    public Integer findlistCount(Map<String, Object> map) {
+        return userMapper.findlistCount(map);
     }
 }

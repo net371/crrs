@@ -5,17 +5,24 @@ import com.crrs.sys.service.UserService;
 import com.crrs.util.BaseCode;
 import com.crrs.util.WebUtil;
 import net.sf.json.JSONObject;
+import org.apache.catalina.filters.ExpiresFilter;
+import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.net.URLDecoder;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/sys")
@@ -73,6 +80,56 @@ public class UserController {
             WebUtil.packResponse(json, BaseCode.SITE_NG.getCode(), response);
         }
     }
+
+    /**
+     * 查询用户列表
+     * @param request
+     * @param response
+     */
+    @RequestMapping("findlist")
+    protected void findUserlist(HttpServletRequest request,
+                                HttpServletResponse response) {
+        JSONObject json=new JSONObject();
+      try {
+          String name=request.getParameter("uname");
+          String curr=request.getParameter("curr");
+          String nums=request.getParameter("nums");
+          int pageindex=0;
+          int pagesize=0;
+          if (!StringUtils.isEmpty(curr)){
+              pageindex=Integer.parseInt(curr)-1;
+              pagesize=Integer.parseInt(nums);
+          }
+          Map<String,Object> map=new HashMap<String,Object>();
+          if(!StringUtils.isEmpty(name)){
+              map.put("uname", URLDecoder.decode(name,"utf-8"));
+          }
+          map.put("offset",pageindex*pagesize);
+          map.put("limit",pagesize);
+          List<User> list= userService.findlist(map);
+          Integer count=userService.findlistCount(map);
+          json.put("data",list);
+          json.put("count",count);
+         WebUtil.packResponse(json,BaseCode.SITE_OK.getCode(),response);
+      }catch (Exception e){
+          e.printStackTrace();
+          WebUtil.packResponse(json,BaseCode.SITE_NG.getCode(),response);
+      }
+    }
+    @RequestMapping("/findByPage/{curr}/{nums}")
+    protected List<User> findByPage(@PathVariable String curr,@PathVariable String nums){
+        int pageindex=0;
+        int pagesize=0;
+        if (!StringUtils.isEmpty(curr)){
+            pageindex=Integer.parseInt(curr)-1;
+            pagesize=Integer.parseInt(nums);
+        }
+        Map<String,Object> map=new HashMap<String,Object>();
+        map.put("offset",pageindex*pagesize);
+        map.put("limit",pagesize);
+        return  userService.findlist(map);
+    }
+
 
     /**
      * 退出
