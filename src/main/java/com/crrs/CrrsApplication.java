@@ -10,7 +10,7 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 @MapperScan("com.crrs.*.mapper")//扫描的mapper
 @SpringBootApplication
 @ServletComponentScan
-class CrrsApplication extends SpringBootServletInitializer {
+public class CrrsApplication extends SpringBootServletInitializer {
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
