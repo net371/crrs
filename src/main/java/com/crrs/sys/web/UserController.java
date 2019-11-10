@@ -4,6 +4,9 @@ import com.crrs.sys.entity.User;
 import com.crrs.sys.service.UserService;
 import com.crrs.util.BaseCode;
 import com.crrs.util.WebUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import net.sf.json.JSONObject;
 import org.apache.catalina.filters.ExpiresFilter;
 import org.apache.commons.lang.StringUtils;
@@ -26,16 +29,21 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/sys")
+@Api(tags = "用户管理Controller")
 public class UserController {
     @Autowired
     private UserService userService;
 
+    //@ApiOperation(value = "根据用户主键查询用户信息", notes = "根据用户主键查询用户信息")
+    //@ApiImplicitParam(name = "id", value = "用户主键", required = true, dataType = "String", paramType = "query")
     @RequestMapping("getUser/{id}")
     public String GetUser(@PathVariable int id){
         return "index";
         //return userService.Sel(id).toString();
     }
 
+    //@ApiOperation(value = "根据用户名查询用户信息", notes = "根据用户名查询用户信息")
+    //@ApiImplicitParam(name = "uname", value = "用户名", required = true, dataType = "String", paramType = "query")
     @RequestMapping("getmodel")
     protected void GetModel(HttpServletRequest request,
         HttpServletResponse response){
@@ -48,6 +56,8 @@ public class UserController {
         //return userService.Sel(id).toString();
     }
 
+    //@ApiOperation(value = "用户登录", notes = "录入用户名和密码进行登录")
+    //@ApiImplicitParam(name = "username", value = "用户名", required = true, dataType = "String", paramType = "query")
     @RequestMapping("/loginUser")
     public String loginUser(String username,String password,HttpSession session) {
         //授权认证
@@ -116,6 +126,7 @@ public class UserController {
           WebUtil.packResponse(json,BaseCode.SITE_NG.getCode(),response);
       }
     }
+
     @RequestMapping("/findByPage/{curr}/{nums}")
     protected List<User> findByPage(@PathVariable String curr,@PathVariable String nums){
         int pageindex=0;
