@@ -28,9 +28,8 @@ public class ShiroConfiguration {
         LinkedHashMap<String, String> filterChainDefinitionMap=new LinkedHashMap<>();
         filterChainDefinitionMap.put("/login*", "anon"); //表示可以匿名访问
         filterChainDefinitionMap.put("/sys/*", "anon");
-        filterChainDefinitionMap.put("/client/test", "anon");
-        filterChainDefinitionMap.put("/assert/test", "anon");//添加白名单
         //放行Swagger2页面，需要放行这些
+        filterChainDefinitionMap.put("/docs.html","anon");
         filterChainDefinitionMap.put("/swagger-ui.html","anon");
         filterChainDefinitionMap.put("/swagger/**","anon");
         filterChainDefinitionMap.put("/webjars/**", "anon");
