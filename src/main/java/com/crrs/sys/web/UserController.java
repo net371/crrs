@@ -6,6 +6,7 @@ import com.crrs.util.BaseCode;
 import com.crrs.util.WebUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import net.sf.json.JSONObject;
 import org.apache.catalina.filters.ExpiresFilter;
@@ -14,14 +15,12 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.List;
@@ -34,17 +33,17 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    //@ApiOperation(value = "根据用户主键查询用户信息", notes = "根据用户主键查询用户信息")
-    //@ApiImplicitParam(name = "id", value = "用户主键", required = true, dataType = "String", paramType = "query")
-    @RequestMapping("getUser/{id}")
+    @ApiOperation(value = "主键查询用户", notes = "根据用户主键查询用户信息")
+    @ApiImplicitParam(name = "id", value = "用户主键", required = true, dataType = "String", paramType = "query")
+    @RequestMapping(value = "getUser/{id}", method= RequestMethod.GET)
     public String GetUser(@PathVariable int id){
         return "index";
         //return userService.Sel(id).toString();
     }
 
-    //@ApiOperation(value = "根据用户名查询用户信息", notes = "根据用户名查询用户信息")
-    //@ApiImplicitParam(name = "uname", value = "用户名", required = true, dataType = "String", paramType = "query")
-    @RequestMapping("getmodel")
+    @ApiOperation(value = "用户名查询用户", notes = "根据用户名查询用户信息")
+    @ApiImplicitParam(name = "uname", value = "用户名", required = true, dataType = "String", paramType = "query")
+    @RequestMapping(value = "getmodel", method= RequestMethod.GET)
     protected void GetModel(HttpServletRequest request,
         HttpServletResponse response){
             String uname = request.getParameter("uname");
@@ -56,9 +55,9 @@ public class UserController {
         //return userService.Sel(id).toString();
     }
 
-    //@ApiOperation(value = "用户登录", notes = "录入用户名和密码进行登录")
-    //@ApiImplicitParam(name = "username", value = "用户名", required = true, dataType = "String", paramType = "query")
-    @RequestMapping("/loginUser")
+    @ApiOperation(value = "用户登录", notes = "录入用户名和密码进行登录")
+    @ApiImplicitParam(name = "username", value = "用户名", required = true, dataType = "String", paramType = "query")
+    @PostMapping("/loginUser")
     public String loginUser(String username,String password,HttpSession session) {
         //授权认证
         UsernamePasswordToken usernamePasswordToken=new UsernamePasswordToken(username,password);
@@ -76,9 +75,11 @@ public class UserController {
         }
     }
 
-    @RequestMapping("insert")
+    @ApiOperation(value = "新增用户", notes = "录入用户名和密码进行登录")
+    @ApiImplicitParam(name = "username", value = "用户名", required = true, dataType = "String", paramType = "query")
+    @PostMapping("insert")
     protected void insertModel(HttpServletRequest request,
-                            HttpServletResponse response){
+                               HttpServletResponse response){
         JSONObject json = new JSONObject();
         try {
             String uname = request.getParameter("uname");
@@ -96,7 +97,7 @@ public class UserController {
      * @param request
      * @param response
      */
-    @RequestMapping("findlist")
+    @PostMapping("findlist")
     protected void findUserlist(HttpServletRequest request,
                                 HttpServletResponse response) {
         JSONObject json=new JSONObject();
@@ -127,7 +128,18 @@ public class UserController {
       }
     }
 
-    @RequestMapping("/findByPage/{curr}/{nums}")
+    /**
+     * 用户列表信息查询
+     * @param curr
+     * @param nums
+     * @return
+     */
+    @ApiOperation(value = "用户列表信息", notes = "查询用户列表信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "curr", value = "每页显示数量", required = true, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "nums", value = "当前页码", required = true, dataType = "String", paramType = "query")
+    })
+    @GetMapping("/findByPage/{curr}/{nums}")
     protected List<User> findByPage(@PathVariable String curr,@PathVariable String nums){
         int pageindex=0;
         int pagesize=0;
@@ -147,7 +159,8 @@ public class UserController {
      * @param session
      * @return
      */
-    @RequestMapping("/logOut")
+    @ApiOperation(value = "退出", notes = "退回系统，清空session")
+    @PostMapping("/logOut")
     public String logOut(HttpSession session) {
         Subject subject = SecurityUtils.getSubject();
         subject.logout();
