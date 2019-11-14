@@ -4,10 +4,7 @@ import com.crrs.sys.entity.User;
 import com.crrs.sys.service.UserService;
 import com.crrs.util.BaseCode;
 import com.crrs.util.WebUtil;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import net.sf.json.JSONObject;
 import org.apache.catalina.filters.ExpiresFilter;
 import org.apache.commons.lang.StringUtils;
@@ -17,6 +14,7 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.management.ValueExp;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -84,7 +82,8 @@ public class UserController {
         try {
             String uname = request.getParameter("uname");
             String pwd = request.getParameter("pwd");
-            User user = new User(uname, pwd);
+             User user =null;
+//            new User(uname, pwd);
             userService.insertModel(user);
             WebUtil.packResponse(json, BaseCode.SITE_OK.getCode(), response);
         }catch (Exception ex){
@@ -97,12 +96,19 @@ public class UserController {
      * @param request
      * @param response
      */
-    @PostMapping("findlist")
-    protected void findUserlist(HttpServletRequest request,
-                                HttpServletResponse response) {
+//    @GetMapping("findlist")
+    @ApiOperation(value = "获取用户列表",notes = "列表信息",httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name="userName",value="用户名",required =true,paramType = "query",dataType = "String"),
+            @ApiImplicitParam(name="curr",value = "当前页数",required = true,paramType = "query",dataType = "String"),
+            @ApiImplicitParam(name="nums",value="每页显示数量",required = true,paramType = "query",dataType = "String")
+            })
+    @ApiResponse(code=1 ,message = "参数查询异常！")
+    @RequestMapping(value = "findlist",method = RequestMethod.POST)
+    protected void findUserlist(@ApiParam(value="用户名称",required = true) @RequestParam String userName,
+                                HttpServletRequest request,HttpServletResponse  response) {
         JSONObject json=new JSONObject();
       try {
-          String name=request.getParameter("uname");
           String curr=request.getParameter("curr");
           String nums=request.getParameter("nums");
           int pageindex=0;
@@ -112,8 +118,8 @@ public class UserController {
               pagesize=Integer.parseInt(nums);
           }
           Map<String,Object> map=new HashMap<String,Object>();
-          if(!StringUtils.isEmpty(name)){
-              map.put("uname", URLDecoder.decode(name,"utf-8"));
+          if(!StringUtils.isEmpty(userName)){
+              map.put("uname", URLDecoder.decode(userName,"utf-8"));
           }
           map.put("offset",pageindex*pagesize);
           map.put("limit",pagesize);
@@ -127,6 +133,28 @@ public class UserController {
           WebUtil.packResponse(json,BaseCode.SITE_NG.getCode(),response);
       }
     }
+    @ApiOperation(value = "添加用户信息")
+    @ApiResponses({
+            @ApiResponse(code=1,message = "用户添加失败！"),
+            @ApiResponse(code=0,message = "用户信息添加成功！")
+    })
+    @RequestMapping(value="/creadUser",method = RequestMethod.POST)
+    protected  void  creadUser(User user,HttpServletResponse response){
+        JSONObject json=new JSONObject();
+        try {
+            userService.insertModel(user);
+            json.put("msg","用户添加成功!");
+            WebUtil.packResponse(json,BaseCode.SITE_OK.getCode(),response);
+        }catch (Exception e){
+            e.printStackTrace();
+            json.put("msg","用户添加失败!");
+            WebUtil.packResponse(json,BaseCode.SITE_NG.getCode(),response);
+        }
+    }
+
+
+
+
 
     /**
      * 用户列表信息查询
