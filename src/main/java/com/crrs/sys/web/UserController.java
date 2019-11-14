@@ -6,6 +6,7 @@ import com.crrs.util.BaseCode;
 import com.crrs.util.WebUtil;
 import io.swagger.annotations.*;
 import net.sf.json.JSONObject;
+import org.apache.catalina.Session;
 import org.apache.catalina.filters.ExpiresFilter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
@@ -45,9 +46,6 @@ public class UserController {
             json.put("msg","查询数据异常!");
             WebUtil.packResponse(json, BaseCode.SITE_NG.getCode(),response);
         }
-
-//        return "index";
-        //return userService.Sel(id).toString();
     }
 
     @ApiOperation(value = "用户名查询用户", notes = "根据用户名查询用户信息")
@@ -85,6 +83,19 @@ public class UserController {
         } catch(Exception e) {
             json.put("msg","登陆成功!");
             WebUtil.packResponse(json,BaseCode.SITE_NG.getCode(),response);
+        }
+    }
+
+    @ApiOperation(value = "获取缓存数据信息", notes = "登陆后的缓存数据")
+    @PostMapping("findsession")
+    protected void findSession(HttpServletRequest request,
+                               HttpServletResponse response,HttpSession session){
+        JSONObject json = new JSONObject();
+        try {
+            json.put("data", session.getAttribute("user"));
+            WebUtil.packResponse(json, BaseCode.SITE_OK.getCode(), response);
+        }catch (Exception ex){
+            WebUtil.packResponse(json, BaseCode.SITE_NG.getCode(), response);
         }
     }
 
@@ -157,6 +168,7 @@ public class UserController {
     protected  void  creadUser(User user,HttpServletResponse response){
         JSONObject json=new JSONObject();
         try {
+            User model = new User(user.getUserName(), user.getPassWord(),"0");
             userService.insertModel(user);
             json.put("msg","用户添加成功!");
             WebUtil.packResponse(json,BaseCode.SITE_OK.getCode(),response);
