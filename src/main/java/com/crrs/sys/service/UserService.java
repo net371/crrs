@@ -41,4 +41,8 @@ public class UserService {
     public Integer findlistCount(Map<String, Object> map) {
         return userMapper.findlistCount(map);
     }
+
+    public User dindbyid(int id) {
+       return userMapper.findById(id);
+    }
 }

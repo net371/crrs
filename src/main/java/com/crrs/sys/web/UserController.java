@@ -34,8 +34,12 @@ public class UserController {
     @ApiOperation(value = "主键查询用户", notes = "根据用户主键查询用户信息")
     @ApiImplicitParam(name = "id", value = "用户主键", required = true, dataType = "String", paramType = "query")
     @RequestMapping(value = "getUser/{id}", method= RequestMethod.GET)
-    public String GetUser(@PathVariable int id){
-        return "index";
+    protected void GetUser(@PathVariable int id,HttpServletResponse response){
+        User user = userService.dindbyid(id);
+        JSONObject json = new JSONObject();
+        json.put("data",user);
+        WebUtil.packResponse(json, BaseCode.SITE_OK.getCode(),response);
+//        return "index";
         //return userService.Sel(id).toString();
     }
 
