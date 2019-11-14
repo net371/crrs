@@ -37,8 +37,4 @@ public class User implements Serializable {
         this.passWord = new Sha512Hash(passWord, this.salt).toString();
         this.locked=locked;
     }
-    public  User(){
-         System.out.println("111111");
-    }
-
 }

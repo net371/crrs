@@ -13,6 +13,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.web.bind.annotation.*;
 
 import javax.management.ValueExp;
@@ -65,7 +66,7 @@ public class UserController {
     @ApiOperation(value = "用户登录", notes = "录入用户名和密码进行登录")
     @ApiImplicitParam(name = "username", value = "用户名", required = true, dataType = "String", paramType = "query")
     @PostMapping("/loginUser")
-    public void loginUser(String username,String password,HttpSession session,HttpServletResponse response) {
+    public void loginUser(String username,String password,HttpServletRequest request,HttpServletResponse response) {
         //授权认证
         UsernamePasswordToken usernamePasswordToken=new UsernamePasswordToken(username,password);
         Subject subject = SecurityUtils.getSubject();
@@ -76,7 +77,7 @@ public class UserController {
             //获得用户对象
             User user=(User) subject.getPrincipal();
             //存入session
-            session.setAttribute("user", user);
+            request.getSession().setAttribute("user", user);
             json.put("msg","登陆成功!");
             WebUtil.packResponse(json,BaseCode.SITE_OK.getCode(),response);
 //            return "index";
@@ -92,7 +93,8 @@ public class UserController {
                                HttpServletResponse response,HttpSession session){
         JSONObject json = new JSONObject();
         try {
-            json.put("data", session.getAttribute("user"));
+            User User= (User) request.getSession().getAttribute("user");
+            json.put("data", User);
             WebUtil.packResponse(json, BaseCode.SITE_OK.getCode(), response);
         }catch (Exception ex){
             WebUtil.packResponse(json, BaseCode.SITE_NG.getCode(), response);
