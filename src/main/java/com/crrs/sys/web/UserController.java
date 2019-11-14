@@ -6,12 +6,14 @@ import com.crrs.util.BaseCode;
 import com.crrs.util.WebUtil;
 import io.swagger.annotations.*;
 import net.sf.json.JSONObject;
+import org.apache.catalina.Session;
 import org.apache.catalina.filters.ExpiresFilter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.web.bind.annotation.*;
 
 import javax.management.ValueExp;
@@ -33,10 +35,18 @@ public class UserController {
 
     @ApiOperation(value = "主键查询用户", notes = "根据用户主键查询用户信息")
     @ApiImplicitParam(name = "id", value = "用户主键", required = true, dataType = "String", paramType = "query")
-    @RequestMapping(value = "getUser/{id}", method= RequestMethod.GET)
-    public String GetUser(@PathVariable int id){
-        return "index";
-        //return userService.Sel(id).toString();
+    @RequestMapping(value = "getUser", method= RequestMethod.POST)
+    protected void GetUser(@RequestParam String id,HttpServletResponse response){
+        JSONObject json = new JSONObject();
+        try{
+            User user = userService.dindbyid(id);
+            json.put("data",user);
+            WebUtil.packResponse(json, BaseCode.SITE_OK.getCode(),response);
+        }catch(Exception e){
+            e.printStackTrace();
+            json.put("msg","查询数据异常!");
+            WebUtil.packResponse(json, BaseCode.SITE_NG.getCode(),response);
+        }
     }
 
     @ApiOperation(value = "用户名查询用户", notes = "根据用户名查询用户信息")
@@ -56,7 +66,7 @@ public class UserController {
     @ApiOperation(value = "用户登录", notes = "录入用户名和密码进行登录")
     @ApiImplicitParam(name = "username", value = "用户名", required = true, dataType = "String", paramType = "query")
     @PostMapping("/loginUser")
-    public void loginUser(String username,String password,HttpSession session,HttpServletResponse response) {
+    public void loginUser(String username,String password,HttpServletRequest request,HttpServletResponse response) {
         //授权认证
         UsernamePasswordToken usernamePasswordToken=new UsernamePasswordToken(username,password);
         Subject subject = SecurityUtils.getSubject();
@@ -67,13 +77,27 @@ public class UserController {
             //获得用户对象
             User user=(User) subject.getPrincipal();
             //存入session
-            session.setAttribute("user", user);
+            request.getSession().setAttribute("user", user);
             json.put("msg","登陆成功!");
             WebUtil.packResponse(json,BaseCode.SITE_OK.getCode(),response);
 //            return "index";
         } catch(Exception e) {
             json.put("msg","登陆成功!");
             WebUtil.packResponse(json,BaseCode.SITE_NG.getCode(),response);
+        }
+    }
+
+    @ApiOperation(value = "获取缓存数据信息", notes = "登陆后的缓存数据")
+    @PostMapping("findsession")
+    protected void findSession(HttpServletRequest request,
+                               HttpServletResponse response,HttpSession session){
+        JSONObject json = new JSONObject();
+        try {
+            User User= (User) request.getSession().getAttribute("user");
+            json.put("data", User);
+            WebUtil.packResponse(json, BaseCode.SITE_OK.getCode(), response);
+        }catch (Exception ex){
+            WebUtil.packResponse(json, BaseCode.SITE_NG.getCode(), response);
         }
     }
 
@@ -146,6 +170,7 @@ public class UserController {
     protected  void  creadUser(User user,HttpServletResponse response){
         JSONObject json=new JSONObject();
         try {
+            User model = new User(user.getUserName(), user.getPassWord(),"0");
             userService.insertModel(user);
             json.put("msg","用户添加成功!");
             WebUtil.packResponse(json,BaseCode.SITE_OK.getCode(),response);

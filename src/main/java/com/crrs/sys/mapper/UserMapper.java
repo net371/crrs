@@ -24,4 +24,6 @@ public interface UserMapper {
     List<User> findlist(Map<String, Object> map);
 
     Integer findlistCount(Map<String, Object> map);
+
+    User findById(String id);
 }
