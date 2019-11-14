@@ -56,10 +56,11 @@ public class UserController {
     @ApiOperation(value = "用户登录", notes = "录入用户名和密码进行登录")
     @ApiImplicitParam(name = "username", value = "用户名", required = true, dataType = "String", paramType = "query")
     @PostMapping("/loginUser")
-    public String loginUser(String username,String password,HttpSession session) {
+    public void loginUser(String username,String password,HttpSession session,HttpServletResponse response) {
         //授权认证
         UsernamePasswordToken usernamePasswordToken=new UsernamePasswordToken(username,password);
         Subject subject = SecurityUtils.getSubject();
+        JSONObject json=new JSONObject();
         try {
             //完成登录
             subject.login(usernamePasswordToken);
@@ -67,9 +68,13 @@ public class UserController {
             User user=(User) subject.getPrincipal();
             //存入session
             session.setAttribute("user", user);
-            return "index";
+            json.put("msg","登陆成功!");
+            WebUtil.packResponse(json,BaseCode.SITE_OK.getCode(),response);
+//            return "index";
         } catch(Exception e) {
-            return "login";//返回登录页面
+            json.put("msg","登陆成功!");
+            WebUtil.packResponse(json,BaseCode.SITE_NG.getCode(),response);
+//            return "login";//返回登录页面
         }
     }
 
@@ -99,13 +104,13 @@ public class UserController {
 //    @GetMapping("findlist")
     @ApiOperation(value = "获取用户列表",notes = "列表信息",httpMethod = "POST")
     @ApiImplicitParams({
-            @ApiImplicitParam(name="userName",value="用户名",required =true,paramType = "query",dataType = "String"),
+            @ApiImplicitParam(name="userName",value="用户名",required =false,paramType = "query",dataType = "String"),
             @ApiImplicitParam(name="curr",value = "当前页数",required = true,paramType = "query",dataType = "String"),
             @ApiImplicitParam(name="nums",value="每页显示数量",required = true,paramType = "query",dataType = "String")
             })
     @ApiResponse(code=1 ,message = "参数查询异常！")
     @RequestMapping(value = "findlist",method = RequestMethod.POST)
-    protected void findUserlist(@ApiParam(value="用户名称",required = true) @RequestParam String userName,
+    protected void findUserlist(@ApiParam(value="用户名称",required = false) @RequestParam(value = "userName" ,required=false) String userName,
                                 HttpServletRequest request,HttpServletResponse  response) {
         JSONObject json=new JSONObject();
       try {
@@ -142,6 +147,7 @@ public class UserController {
     protected  void  creadUser(User user,HttpServletResponse response){
         JSONObject json=new JSONObject();
         try {
+
             userService.insertModel(user);
             json.put("msg","用户添加成功!");
             WebUtil.packResponse(json,BaseCode.SITE_OK.getCode(),response);
@@ -151,10 +157,6 @@ public class UserController {
             WebUtil.packResponse(json,BaseCode.SITE_NG.getCode(),response);
         }
     }
-
-
-
-
 
     /**
      * 用户列表信息查询

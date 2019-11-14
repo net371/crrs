@@ -30,11 +30,12 @@ public class User implements Serializable {
     @NotBlank(message = "密码超过一定次后自动锁定")
     private String locked;
 
-//    public User(String username, String password) {
-//        this.id = UUID.randomUUID().toString().replace("-", "");
-//        this.userName = username;
-//        this.salt = this.id.substring(0, 6);
-//        this.passWord = new Sha512Hash(password, this.salt).toString();
-//    }
+     public User(String userName, String passWord,String locked) {
+        this.id = UUID.randomUUID().toString().replace("-", "");
+        this.userName = userName;
+        this.salt = this.id.substring(0, 6);
+        this.passWord = new Sha512Hash(passWord, this.salt).toString();
+        this.locked=locked;
+    }
 
 }
