@@ -66,7 +66,9 @@ public class UserController {
     @ApiOperation(value = "用户登录", notes = "录入用户名和密码进行登录")
     @ApiImplicitParam(name = "username", value = "用户名", required = true, dataType = "String", paramType = "query")
     @PostMapping("/loginUser")
-    public void loginUser(String username,String password,HttpServletRequest request,HttpServletResponse response) {
+    public void loginUser(HttpServletRequest request,HttpServletResponse response) {
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
         //授权认证
         UsernamePasswordToken usernamePasswordToken=new UsernamePasswordToken(username,password);
         Subject subject = SecurityUtils.getSubject();
@@ -82,7 +84,7 @@ public class UserController {
             WebUtil.packResponse(json,BaseCode.SITE_OK.getCode(),response);
 //            return "index";
         } catch(Exception e) {
-            json.put("msg","登陆成功!");
+            json.put("msg","登陆失败!");
             WebUtil.packResponse(json,BaseCode.SITE_NG.getCode(),response);
         }
     }
