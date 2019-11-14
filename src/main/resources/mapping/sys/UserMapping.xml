@@ -43,4 +43,26 @@
             </if>
         </trim>
     </insert>
+    <!--查询用户列表-->
+    <select id="findlist" parameterType="map" resultMap="BaseResultMap">
+        select * from sys_users
+         <trim prefix="where" prefixOverrides="and|or">
+             <if test="uname !=null and uname !='' ">
+             username like "%" #{uname} "%"
+             </if>
+         </trim>
+        ORDER BY id
+        <if test="offset !=null">
+            LIMIT #{offset},#{limit}
+        </if>
+    </select>
+    <!--查询列表数量-->
+    <select id="findlistCount" parameterType="map" resultType="java.lang.Integer">
+         select COUNT(1) from sys_users
+         <trim prefix="where" prefixOverrides="and|or">
+            <if test="uname !=null and uname !='' ">
+                username like "%" #{uname} "%"
+            </if>
+         </trim>
+    </select>
 </mapper>

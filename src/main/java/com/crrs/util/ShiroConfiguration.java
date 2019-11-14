@@ -22,17 +22,21 @@ public class ShiroConfiguration {
         ShiroFilterFactoryBean bean=new ShiroFilterFactoryBean();
         bean.setSecurityManager(manager);
         //配置登录的url和登录成功的url
-        bean.setLoginUrl("/login");
+        bean.setLoginUrl("/login.jsp");
         bean.setSuccessUrl("/home");
         //配置访问权限
         LinkedHashMap<String, String> filterChainDefinitionMap=new LinkedHashMap<>();
         filterChainDefinitionMap.put("/login*", "anon"); //表示可以匿名访问
-        filterChainDefinitionMap.put("/sys/loginUser", "anon");
-        filterChainDefinitionMap.put("/client/test", "anon");
-        filterChainDefinitionMap.put("/assert/test", "anon");//添加白名单
-        filterChainDefinitionMap.put("/assert/get", "anon");//添加白名单
-        filterChainDefinitionMap.put("/assert/assertQuery", "anon");//添加白名单
-        filterChainDefinitionMap.put("/a", "anon");
+        filterChainDefinitionMap.put("/sys/*", "anon");
+        //放行Swagger2页面，需要放行这些
+        filterChainDefinitionMap.put("/docs.html","anon");
+        filterChainDefinitionMap.put("/swagger-ui.html","anon");
+        filterChainDefinitionMap.put("/swagger/**","anon");
+        filterChainDefinitionMap.put("/webjars/**", "anon");
+        filterChainDefinitionMap.put("/swagger-resources/**","anon");
+        filterChainDefinitionMap.put("/v2/**","anon");
+        filterChainDefinitionMap.put("/static/**", "anon");
+
         filterChainDefinitionMap.put("/book/list", "anon");
         filterChainDefinitionMap.put("/logout*","anon");
         filterChainDefinitionMap.put("/jsp/error.jsp*","anon");

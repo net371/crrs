@@ -7,13 +7,14 @@ spring:
     password: root
     url: jdbc:mysql://192.168.10.147:3306/crrs_shiro?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
-  mvc:
-    view:
-      prefix: /webapp/WEB-INF/jsp/
-      suffix: .jsp
+  #mvc:
+  #  view:
+  #        prefix: /WEB-INF/jsp/
+  #    suffix: .jsp
 
 mybatis:
-  mapper-locations: classpath*:mapping/*/*Mapping.xml
+  config-location: classpath:mapping/mybatis-config.xml
+  mapper-locations: classpath:mapping/*/*Mapping.xml
   type-aliases-package: com.crrs.*.entity
 
 #showSql
