@@ -25,5 +25,5 @@ public interface UserMapper {
 
     Integer findlistCount(Map<String, Object> map);
 
-    User findById(int id);
+    User findById(String id);
 }

@@ -42,7 +42,7 @@ public class UserService {
         return userMapper.findlistCount(map);
     }
 
-    public User dindbyid(int id) {
+    public User dindbyid(String id) {
        return userMapper.findById(id);
     }
 }

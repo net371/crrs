@@ -33,12 +33,19 @@ public class UserController {
 
     @ApiOperation(value = "主键查询用户", notes = "根据用户主键查询用户信息")
     @ApiImplicitParam(name = "id", value = "用户主键", required = true, dataType = "String", paramType = "query")
-    @RequestMapping(value = "getUser/{id}", method= RequestMethod.GET)
-    protected void GetUser(@PathVariable int id,HttpServletResponse response){
-        User user = userService.dindbyid(id);
+    @RequestMapping(value = "getUser", method= RequestMethod.POST)
+    protected void GetUser(@RequestParam String id,HttpServletResponse response){
         JSONObject json = new JSONObject();
-        json.put("data",user);
-        WebUtil.packResponse(json, BaseCode.SITE_OK.getCode(),response);
+        try{
+            User user = userService.dindbyid(id);
+            json.put("data",user);
+            WebUtil.packResponse(json, BaseCode.SITE_OK.getCode(),response);
+        }catch(Exception e){
+            e.printStackTrace();
+            json.put("msg","查询数据异常!");
+            WebUtil.packResponse(json, BaseCode.SITE_NG.getCode(),response);
+        }
+
 //        return "index";
         //return userService.Sel(id).toString();
     }
