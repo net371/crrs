@@ -33,9 +33,20 @@ public class UserController {
 
     @ApiOperation(value = "主键查询用户", notes = "根据用户主键查询用户信息")
     @ApiImplicitParam(name = "id", value = "用户主键", required = true, dataType = "String", paramType = "query")
-    @RequestMapping(value = "getUser/{id}", method= RequestMethod.GET)
-    public String GetUser(@PathVariable int id){
-        return "index";
+    @RequestMapping(value = "getUser", method= RequestMethod.POST)
+    protected void GetUser(@RequestParam String id,HttpServletResponse response){
+        JSONObject json = new JSONObject();
+        try{
+            User user = userService.dindbyid(id);
+            json.put("data",user);
+            WebUtil.packResponse(json, BaseCode.SITE_OK.getCode(),response);
+        }catch(Exception e){
+            e.printStackTrace();
+            json.put("msg","查询数据异常!");
+            WebUtil.packResponse(json, BaseCode.SITE_NG.getCode(),response);
+        }
+
+//        return "index";
         //return userService.Sel(id).toString();
     }
 
@@ -74,7 +85,6 @@ public class UserController {
         } catch(Exception e) {
             json.put("msg","登陆成功!");
             WebUtil.packResponse(json,BaseCode.SITE_NG.getCode(),response);
-//            return "login";//返回登录页面
         }
     }
 
@@ -110,7 +120,7 @@ public class UserController {
             })
     @ApiResponse(code=1 ,message = "参数查询异常！")
     @RequestMapping(value = "findlist",method = RequestMethod.POST)
-    protected void findUserlist(@ApiParam(value="用户名称",required = false) @RequestParam(value = "userName" ,required=false) String userName,
+    protected void findUserlist(@RequestParam(value = "userName" ,required=false) String userName,
                                 HttpServletRequest request,HttpServletResponse  response) {
         JSONObject json=new JSONObject();
       try {
@@ -147,7 +157,6 @@ public class UserController {
     protected  void  creadUser(User user,HttpServletResponse response){
         JSONObject json=new JSONObject();
         try {
-
             userService.insertModel(user);
             json.put("msg","用户添加成功!");
             WebUtil.packResponse(json,BaseCode.SITE_OK.getCode(),response);
