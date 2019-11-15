@@ -45,4 +45,20 @@ public class UserService {
     public User dindbyid(String id) {
        return userMapper.findById(id);
     }
+
+    /***
+     * 修改用户信息
+     * @param map
+     */
+    public void Update(Map<String, Object> map) {
+        userMapper.Update(map);
+    }
+
+    /**
+     * 通过用户主键id删除用户信息
+     * @param id
+     */
+    public void delUser(String id) {
+        userMapper.delUser(id);
+    }
 }
