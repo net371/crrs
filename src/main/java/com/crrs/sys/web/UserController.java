@@ -195,7 +195,7 @@ public class UserController {
             @ApiImplicitParam(value = "用户名称", name = "userName", dataType = "String", required = false),
             @ApiImplicitParam(value = "用户密码", name = "passWord", dataType = "String", required = false)
     })
-    @RequestMapping(value = "Edit", method = RequestMethod.GET)
+    @RequestMapping(value = "Edit", method = RequestMethod.POST)
     protected void Edit(@RequestParam String id,
                         @RequestParam(value = "userName", required = false) String userName,
                         @RequestParam(value = "passWord", required = false) String passWord,
@@ -221,22 +221,20 @@ public class UserController {
 
     @ApiOperation(value = "删除用户信息")
     @ApiImplicitParam(name = "id", value = "用户主键id", dataType = "String", required = true)
-    @RequestMapping(value = "DelUser", method = RequestMethod.GET)
+    @RequestMapping(value = "DelUser", method = RequestMethod.POST)
     protected void delUser(@RequestParam String id, HttpServletResponse response) {
-        JSONObject JSONObject=new JSONObject();
-        try{
-            if(!StringUtils.isEmpty(id)){
-               String[] ids= id.split(",");
-                for(int i=0;i<ids.length;i++){
-                    userService.delUser(ids[i]);
-                }
+        JSONObject JSONObject = new JSONObject();
+        try {
+            if (!StringUtils.isEmpty(id)) {
+                String[] ids = id.split(",");
+                for (String s : ids) userService.delUser(s);
             }
-            JSONObject.put("msg","数据删除成功!");
-            WebUtil.packResponse(JSONObject,BaseCode.SITE_OK.getCode(),response);
-        }catch (Exception e){
+            JSONObject.put("msg", "数据删除成功!");
+            WebUtil.packResponse(JSONObject, BaseCode.SITE_OK.getCode(), response);
+        } catch (Exception e) {
             e.printStackTrace();
-            JSONObject.put("msg","数据删除失败!");
-            WebUtil.packResponse(JSONObject,BaseCode.SITE_NG.getCode(),response);
+            JSONObject.put("msg", "数据删除失败!");
+            WebUtil.packResponse(JSONObject, BaseCode.SITE_NG.getCode(), response);
         }
     }
 
