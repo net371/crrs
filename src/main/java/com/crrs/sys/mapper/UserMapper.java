@@ -26,4 +26,8 @@ public interface UserMapper {
     Integer findlistCount(Map<String, Object> map);
 
     User findById(String id);
+
+    void Update(Map<String, Object> map);
+
+    void delUser(String id);
 }
