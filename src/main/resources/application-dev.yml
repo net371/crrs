@@ -1,12 +1,19 @@
 server:
   port: 8080
 
+
+debug: true
 spring:
   datasource:
     username: root
     password: root
-    url: jdbc:mysql://192.168.10.147:3306/crrs_shiro?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
+    url: jdbc:mysql://192.168.1.5:3306/crrs_shiro?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
+  devtools:
+    restart:
+      enabled: true  #设置开启热部署
+  freemarker:
+    cache: false    #页面不加载缓存，修改即时生效
   #mvc:
   #  view:
   #        prefix: /WEB-INF/jsp/
@@ -23,3 +30,4 @@ logging:
     com:
       example:
         mapper : debug
+
