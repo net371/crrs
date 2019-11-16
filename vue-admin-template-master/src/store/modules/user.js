@@ -41,7 +41,7 @@ const actions = {
       param.append("username", username.trim());
       param.append("password", password);
       axios
-        .post('/api/sys/loginUser',param)
+        .post(process.env.VUE_APP_BASE_API + '/sys/loginUser',param)
         .then(response => {
           if(response.data.msg == '登陆成功!'){
             commit('SET_TOKEN', '1')
@@ -63,7 +63,7 @@ const actions = {
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       axios
-        .post('/api/sys/findsession',{
+        .post(process.env.VUE_APP_BASE_API + '/sys/findsession',{
         })
         .then(response => {
           const { data } = response
@@ -155,7 +155,7 @@ const actions = {
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
       axios
-        .post('/api/sys/logOut',{
+        .post(process.env.VUE_APP_BASE_API + '/sys/logOut',{
           params: {
           }
         })

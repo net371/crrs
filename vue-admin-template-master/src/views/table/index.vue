@@ -146,7 +146,7 @@ export default {
       param.append("nums", this.pageSize);
       param.append("userName", this.username);
       axios
-          .post('/api/sys/findlist',param)
+          .post(process.env.VUE_APP_BASE_API + '/sys/findlist',param)
           .then(response => {
               this.list = response.data.data
               this.totalItems = response.data.count;
@@ -166,7 +166,7 @@ export default {
         this.form.id = ''
         this.form.name = ''
         this.form.pwd = ''
-        this.url = '/api/sys/creadUser'
+        this.url = process.env.VUE_APP_BASE_API + '/sys/creadUser'
         this.dialogTitle = "添加"
     },
     handleEdit(index, row) {
@@ -174,12 +174,12 @@ export default {
         this.form.id = row.id
         this.form.name = row.userName
         this.form.pwd = row.passWord
-        this.url = '/api/sys/Edit'
+        this.url = process.env.VUE_APP_BASE_API + '/sys/Edit'
         this.dialogTitle = "编辑"
         console.log(index, row);
     },
     handleDelete(index, row) {
-        this.url = '/api/sys/DelUser'
+        this.url = process.env.VUE_APP_BASE_API + '/sys/DelUser'
         this.$confirm('确定要删除该用户吗？',{
             confirmButtonText: '确定',
             cancelButtonText: '取消'

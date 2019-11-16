@@ -23,10 +23,13 @@ public class ShiroConfiguration {
         bean.setSecurityManager(manager);
         //配置登录的url和登录成功的url
         bean.setLoginUrl("/index.html");
-        bean.setSuccessUrl("/home");
+        bean.setSuccessUrl("/");
         //配置访问权限
         LinkedHashMap<String, String> filterChainDefinitionMap=new LinkedHashMap<>();
         filterChainDefinitionMap.put("/login*", "anon"); //表示可以匿名访问
+        filterChainDefinitionMap.put("/index*", "anon"); //表示可以匿名访问
+        filterChainDefinitionMap.put("/css/*", "anon"); //表示可以匿名访问
+        filterChainDefinitionMap.put("/js/*", "anon"); //表示可以匿名访问
         filterChainDefinitionMap.put("/sys/*", "anon");
         //放行Swagger2页面，需要放行这些
         filterChainDefinitionMap.put("/docs.html","anon");
